@@ -524,6 +524,26 @@ function selectLang(code) {
   if (document.querySelector('.page[data-page="status"].active')) loadStatusPanel();
   void persistUiPrefs();
 }
+function syncChatFontSegments(value) {
+  document.querySelectorAll('.chat-font-seg').forEach(el => {
+    const v = parseInt(el.dataset.value, 10);
+    el.classList.toggle('on', v <= value);
+    el.classList.toggle('cur', v === value);
+  });
+}
+function initChatFontSliderUi() {
+  const segs = document.getElementById('chat-font-segments');
+  if (!segs || segs.childElementCount) return;
+  for (let i = CHAT_FONT_MIN; i <= CHAT_FONT_MAX; i++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chat-font-seg';
+    btn.dataset.value = String(i);
+    btn.tabIndex = -1;
+    btn.addEventListener('click', () => applyChatFontSize(i));
+    segs.appendChild(btn);
+  }
+}
 function applyChatFontSize(size, { persist } = { persist: true }) {
   chatFontSize = normalizeChatFontSize(size);
   document.documentElement.dataset.chatFont = String(chatFontSize);
@@ -532,6 +552,7 @@ function applyChatFontSize(size, { persist } = { persist: true }) {
   const label = document.getElementById('chat-font-value');
   if (slider) slider.value = String(chatFontSize);
   if (label) label.textContent = `${chatFontSize}px`;
+  syncChatFontSegments(chatFontSize);
   if (persist) void persistUiPrefs();
 }
 function applyTheme(id, { persist } = { persist: true }) {
@@ -2559,6 +2580,7 @@ if (chanListEl) {
 loadSessions();
 applyAppearance(appearance, plainUi, { persist: false });
 applyTheme(theme, { persist: false });
+initChatFontSliderUi();
 applyChatFontSize(chatFontSize, { persist: false });
 syncHljsTheme();
 state.planMode = localStorage.getItem('ga_plan') === '1';
