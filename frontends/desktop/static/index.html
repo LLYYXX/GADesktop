@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>GenericAgent</title>
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=14">
 <!-- KaTeX: LaTeX 公式渲染 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
 <!-- highlight.js: 代码高亮 -->
@@ -395,9 +395,13 @@
         <div class="set-block">
           <div class="set-sec-t" id="chat-font-label" data-i18n="set.fontSize"></div>
           <div class="chat-font-row">
-            <div class="chat-font-slider-wrap" id="chat-font-slider-wrap">
-              <div class="chat-font-segments" id="chat-font-segments"></div>
-              <input type="range" class="chat-font-slider" id="chat-font-slider" min="10" max="20" step="1" value="14" aria-labelledby="chat-font-label">
+            <div class="chat-font-stepper-wrap">
+              <div class="chat-font-stepper" id="chat-font-stepper" role="slider"
+                aria-valuemin="10" aria-valuemax="20" aria-valuenow="14"
+                aria-valuetext="14px" aria-labelledby="chat-font-label" tabindex="0">
+                <div class="chat-font-segments" id="chat-font-segments"></div>
+              </div>
+              <div class="chat-font-scale" aria-hidden="true"><span>10</span><span>20</span></div>
             </div>
             <span class="chat-font-value" id="chat-font-value" aria-hidden="true">14px</span>
           </div>
@@ -446,7 +450,7 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
 <!-- highlight.js -->
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js" crossorigin="anonymous"></script>
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 <script src="annot.js"></script><!-- DEV 脚手架，可删 -->
 </body>
 </html>

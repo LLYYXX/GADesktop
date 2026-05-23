@@ -276,63 +276,37 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; }
 .lang-list{ margin-bottom:0; }
 
 .chat-font-row{
-  display:flex; align-items:center; gap:12px;
+  display:flex; align-items:flex-start; gap:12px;
 }
-.chat-font-slider-wrap{
-  flex:1; min-width:0; position:relative; height:36px;
-  display:flex; align-items:center;
+.chat-font-stepper-wrap{ flex:1; min-width:0; }
+.chat-font-stepper{
+  padding:4px 0 2px; cursor:pointer; touch-action:none; border-radius:8px;
+}
+.chat-font-stepper:focus{ outline:none; }
+.chat-font-stepper:focus-visible{
+  outline:2px solid var(--blue); outline-offset:3px;
 }
 .chat-font-segments{
-  position:absolute; left:9px; right:9px; top:50%; transform:translateY(-50%);
-  display:grid; grid-template-columns:repeat(11, 1fr); gap:3px; height:6px;
+  display:grid; grid-template-columns:repeat(11, 1fr); gap:3px;
+  padding:4px; border-radius:6px;
+  background:var(--line-soft); border:1px solid var(--line);
 }
 .chat-font-seg{
-  border:none; padding:0; margin:0; border-radius:3px;
+  height:8px; border:none; padding:0; margin:0; border-radius:2px;
   background:var(--line); cursor:pointer;
-  transition:background .12s, transform .12s, box-shadow .12s;
+  transition:background .12s;
 }
-.chat-font-seg.on{ background:color-mix(in srgb, var(--blue) 45%, var(--line)); }
-.chat-font-seg.cur{
-  background:var(--blue);
-  transform:scaleY(1.35);
-  box-shadow:0 0 0 1px color-mix(in srgb, var(--blue) 35%, transparent);
-}
-.chat-font-seg:hover{ background:color-mix(in srgb, var(--blue) 28%, var(--line)); }
+.chat-font-seg.on{ background:color-mix(in srgb, var(--blue) 55%, var(--line)); }
+.chat-font-seg.cur{ background:var(--blue); }
+.chat-font-seg:hover{ background:color-mix(in srgb, var(--blue) 35%, var(--line)); }
 .chat-font-seg.cur:hover{ background:var(--blue); }
-.chat-font-slider{
-  position:relative; z-index:1; width:100%; margin:0; padding:0;
-  background:transparent; cursor:pointer;
-  -webkit-appearance:none; appearance:none; height:36px;
+.chat-font-scale{
+  display:flex; justify-content:space-between; margin-top:4px;
+  padding:0 4px; font-size:10px; color:var(--muted2); font-variant-numeric:tabular-nums;
 }
-.chat-font-slider:focus{ outline:none; }
-.chat-font-slider:focus-visible::-webkit-slider-thumb{
-  box-shadow:0 0 0 3px color-mix(in srgb, var(--blue) 28%, transparent), 0 1px 4px var(--hover-dim);
-}
-.chat-font-slider:focus-visible::-moz-range-thumb{
-  box-shadow:0 0 0 3px color-mix(in srgb, var(--blue) 28%, transparent), 0 1px 4px var(--hover-dim);
-}
-.chat-font-slider::-webkit-slider-runnable-track{
-  height:36px; background:transparent; border:none;
-}
-.chat-font-slider::-webkit-slider-thumb{
-  -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
-  background:var(--panel); border:2px solid var(--blue);
-  box-shadow:0 1px 4px var(--hover-dim);
-  margin-top:-6px; transition:transform .12s, box-shadow .12s;
-}
-.chat-font-slider:active::-webkit-slider-thumb{ transform:scale(1.06); }
-.chat-font-slider::-moz-range-track{
-  height:36px; background:transparent; border:none;
-}
-.chat-font-slider::-moz-range-thumb{
-  width:18px; height:18px; border-radius:50%; border:2px solid var(--blue);
-  background:var(--panel); box-shadow:0 1px 4px var(--hover-dim);
-  transition:transform .12s, box-shadow .12s;
-}
-.chat-font-slider:active::-moz-range-thumb{ transform:scale(1.06); }
 .chat-font-value{
   flex:0 0 36px; font-size:12px; font-weight:600; color:var(--txt-2);
-  font-variant-numeric:tabular-nums; text-align:right;
+  font-variant-numeric:tabular-nums; text-align:right; line-height:28px;
 }
 
 /* 颜色：mac 式 4×2 色盘 */

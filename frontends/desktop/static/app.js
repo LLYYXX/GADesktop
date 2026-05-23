@@ -530,8 +530,20 @@ function syncChatFontSegments(value) {
     el.classList.toggle('on', v <= value);
     el.classList.toggle('cur', v === value);
   });
+  const stepper = document.getElementById('chat-font-stepper');
+  if (stepper) {
+    stepper.setAttribute('aria-valuenow', String(value));
+    stepper.setAttribute('aria-valuetext', `${value}px`);
+  }
 }
-function initChatFontSliderUi() {
+function chatFontFromPointer(clientX) {
+  const segs = document.getElementById('chat-font-segments');
+  if (!segs) return chatFontSize;
+  const rect = segs.getBoundingClientRect();
+  const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+  return CHAT_FONT_MIN + Math.round(ratio * (CHAT_FONT_MAX - CHAT_FONT_MIN));
+}
+function initChatFontStepper() {
   const segs = document.getElementById('chat-font-segments');
   if (!segs || segs.childElementCount) return;
   for (let i = CHAT_FONT_MIN; i <= CHAT_FONT_MAX; i++) {
@@ -540,17 +552,56 @@ function initChatFontSliderUi() {
     btn.className = 'chat-font-seg';
     btn.dataset.value = String(i);
     btn.tabIndex = -1;
-    btn.addEventListener('click', () => applyChatFontSize(i));
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      applyChatFontSize(i);
+    });
     segs.appendChild(btn);
   }
+  const stepper = document.getElementById('chat-font-stepper');
+  if (!stepper || stepper.dataset.bound) return;
+  stepper.dataset.bound = '1';
+  let dragging = false;
+  const pick = (clientX, persist) => applyChatFontSize(chatFontFromPointer(clientX), { persist });
+  stepper.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    dragging = true;
+    stepper.setPointerCapture(e.pointerId);
+    pick(e.clientX, false);
+  });
+  stepper.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    pick(e.clientX, false);
+  });
+  const endDrag = (e, persist) => {
+    if (!dragging) return;
+    dragging = false;
+    try { stepper.releasePointerCapture(e.pointerId); } catch (_) {}
+    pick(e.clientX, persist);
+  };
+  stepper.addEventListener('pointerup', (e) => endDrag(e, true));
+  stepper.addEventListener('pointercancel', (e) => endDrag(e, false));
+  stepper.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      applyChatFontSize(chatFontSize - 1);
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      applyChatFontSize(chatFontSize + 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      applyChatFontSize(CHAT_FONT_MIN);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      applyChatFontSize(CHAT_FONT_MAX);
+    }
+  });
 }
 function applyChatFontSize(size, { persist } = { persist: true }) {
   chatFontSize = normalizeChatFontSize(size);
   document.documentElement.dataset.chatFont = String(chatFontSize);
   document.documentElement.style.setProperty('--chat-font', `${chatFontSize}px`);
-  const slider = document.getElementById('chat-font-slider');
   const label = document.getElementById('chat-font-value');
-  if (slider) slider.value = String(chatFontSize);
   if (label) label.textContent = `${chatFontSize}px`;
   syncChatFontSegments(chatFontSize);
   if (persist) void persistUiPrefs();
@@ -1572,15 +1623,8 @@ const plainUiSwitch = document.getElementById('plain-ui-switch');
 if (plainUiSwitch) plainUiSwitch.addEventListener('click', () => {
   if (appearance === 'light') applyAppearance('light', !plainUi);
 });
-const chatFontSlider = document.getElementById('chat-font-slider');
-if (chatFontSlider) {
-  chatFontSlider.addEventListener('input', () => {
-    applyChatFontSize(chatFontSlider.value, { persist: false });
-  });
-  chatFontSlider.addEventListener('change', () => {
-    applyChatFontSize(chatFontSlider.value, { persist: true });
-  });
-}
+const chatFontStepper = document.getElementById('chat-font-stepper');
+if (chatFontStepper && !chatFontStepper.dataset.bound) initChatFontStepper();
 async function loadBridgeConfig() {
   try {
     const res = await window.ga.getConfig();
@@ -2580,7 +2624,7 @@ if (chanListEl) {
 loadSessions();
 applyAppearance(appearance, plainUi, { persist: false });
 applyTheme(theme, { persist: false });
-initChatFontSliderUi();
+initChatFontStepper();
 applyChatFontSize(chatFontSize, { persist: false });
 syncHljsTheme();
 state.planMode = localStorage.getItem('ga_plan') === '1';
