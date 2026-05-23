@@ -526,9 +526,7 @@ function selectLang(code) {
 }
 function syncChatFontSegments(value) {
   document.querySelectorAll('.chat-font-seg').forEach(el => {
-    const v = parseInt(el.dataset.value, 10);
-    el.classList.toggle('on', v <= value);
-    el.classList.toggle('cur', v === value);
+    el.classList.toggle('cur', parseInt(el.dataset.value, 10) === value);
   });
   const stepper = document.getElementById('chat-font-stepper');
   if (stepper) {
@@ -1623,8 +1621,6 @@ const plainUiSwitch = document.getElementById('plain-ui-switch');
 if (plainUiSwitch) plainUiSwitch.addEventListener('click', () => {
   if (appearance === 'light') applyAppearance('light', !plainUi);
 });
-const chatFontStepper = document.getElementById('chat-font-stepper');
-if (chatFontStepper && !chatFontStepper.dataset.bound) initChatFontStepper();
 async function loadBridgeConfig() {
   try {
     const res = await window.ga.getConfig();

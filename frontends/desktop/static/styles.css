@@ -288,15 +288,12 @@ body{ background:var(--bg); color:var(--txt); font-size:13px; overflow:hidden; }
 }
 .chat-font-segments{
   display:grid; grid-template-columns:repeat(11, 1fr); gap:3px;
-  padding:4px; border-radius:6px;
-  background:var(--line-soft); border:1px solid var(--line);
 }
 .chat-font-seg{
   height:8px; border:none; padding:0; margin:0; border-radius:2px;
   background:var(--line); cursor:pointer;
   transition:background .12s;
 }
-.chat-font-seg.on{ background:color-mix(in srgb, var(--blue) 55%, var(--line)); }
 .chat-font-seg.cur{ background:var(--blue); }
 .chat-font-seg:hover{ background:color-mix(in srgb, var(--blue) 35%, var(--line)); }
 .chat-font-seg.cur:hover{ background:var(--blue); }
